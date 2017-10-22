@@ -20,8 +20,14 @@ int main()
 	cin >> current;
 	
 		
-	//Creation de neurone
-	Neuron n;
+	//Creation des neurones
+	Network network;
+	Neuron n1;
+	Neuron n2;
+	
+	//add neurons to network
+	network.addNeuron(&n1);
+	network.addNeuron(&n2);
 	
 	//Creation of write file
 	ofstream textfile;
@@ -33,23 +39,29 @@ int main()
 		//if we are inside the time interval given we set the neurons current
 		if (simulation_time*H >= a or simulation_time*H < b)
 		{
-			n.setCurrent(current);
+			for (auto& n: network.getNeurons())
+			{
+				n.setCurrent(current);
+			}
 		}
 		else
 		{
-			n.setCurrent(0.0);
+			for (auto& n: network.getNeurons())
+			{
+				n.setCurrent(0.0);
+			}
 		}
 		
-		bool spike = n.update();
+		network.update(simulation_time, current);
 		
-		//si on a un spike pendant le update
+		/*//si on a un spike pendant le update
 		if (spike)
 		{
 			//on ajoute le spike time aux vecteur dans la neurone
 			n.addSpikeTime(simulation_time*H);
 			//on affiche le temps dans le fichier externe
 			textfile << "Spike time: " << simulation_time << endl;
-		}
+		}*/
 		
 		simulation_time++;
 	}
