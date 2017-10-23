@@ -22,7 +22,7 @@ class Neuron
 		double i_ext_;
 		bool refractory_;
 		double break_time_;
-		unsigned int clock;				//local clock in steps
+		unsigned int clock_;				//local clock in steps
 		
 		std::vector<double> spike_times_; 		//contains time(t*h) of spikes
 		std::vector<Neuron*> connections_;
@@ -53,9 +53,6 @@ class Neuron
 		
 		bool update(unsigned int time, double current); 		//methode appele a chaque pas de temps dans le main
 		
-	
-
-	
 	
 };
 

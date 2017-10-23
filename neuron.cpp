@@ -1,5 +1,5 @@
 #include <iostream>
-#include "neuron.hpp"
+#include "Neuron.hpp"
 #include <cmath>
 //#include <cassert>
 
@@ -9,17 +9,17 @@ Neuron::Neuron()
 	:h_(0.1),
 	tau_(20.0),
 	C_(1.0),
-	R_ (tau/C),
+	R_ (tau_/C_),
 	thr_pot_(20),
-	ref_time_(0.2),
-	j_amp(2),
+	ref_time_(2),
+	j_amp_(1.5),
 	delay_(5),
 	memb_pot_(0.0),
 	nb_spikes_(0),
 	i_ext_(0.0),
 	refractory_(false),
 	break_time_(0.0),
-	clock(0),
+	clock_(0),
 	spike_times_(),
 	connections_(),
 	buffer_()
@@ -27,8 +27,6 @@ Neuron::Neuron()
 	c1_ = exp(- h_ /tau_);
 	c2_= R_*(1.0 - c1_);
 }
-
-
 
 double Neuron::getMembranePotential() const
 {
@@ -72,7 +70,7 @@ bool Neuron::isRefractory()
 
 double Neuron::solveMembEquation()
 {
-	return c1_ * memb_pot_ + i_ext_ * c2_;
+	return (c1_ * memb_pot_) + (i_ext_ * c2_);
 }
 
 void Neuron::addSpikeTime(double time)
@@ -85,7 +83,7 @@ void Neuron::addConnection(Neuron* target)
 	connections_.push_back(target);
 }
 
-void Neuron::receive(unsigned long)
+void Neuron::receive(unsigned long time)
 {
 	buffer_.addJ(time);
 }
@@ -98,9 +96,9 @@ void Neuron::receive(unsigned long)
 bool Neuron::update(unsigned int time, double current)
 {
 	bool spike(false);
-	clock = time;
-	i_ext_=current;
-	
+	clock_ = time;
+	i_ext_ = current;
+		
 	if (refractory_)
 	{
 		setMembranePotential(0.0);
@@ -115,15 +113,18 @@ bool Neuron::update(unsigned int time, double current)
 	}
 	else if (memb_pot_ > thr_pot_)
 	{
-		addSpikeTime(clock * h);
+		addSpikeTime(clock_);
 		nb_spikes_++;
 		spike = true;
 		refractory_ = true;
+		
+		
 	}
 	
-	memb_pot_ = solveMembEquation() + (buffer_.getJ(time) * j_amp_);	
+	setMembranePotential(solveMembEquation() + (buffer_.getJ(time) * j_amp_));
+	buffer_.resetValue(time);	
 	
-	clock++;
+	clock_++;
 	
 	return spike;
 }

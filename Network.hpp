@@ -4,6 +4,8 @@
 #include <vector>
 #include "Neuron.hpp"
 
+const double h_ = 0.1;
+
 class Network
 {
 	private:
@@ -30,4 +32,3 @@ class Network
 };
 
 #endif
-
