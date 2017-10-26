@@ -3,14 +3,13 @@
 
 #include <vector>
 #include "Neuron.hpp"
-
-const double h_ = 0.1;
+#include "Constants.hpp"
 
 class Network
 {
 	private:
 		std::vector<Neuron*> neurons_; 		//stores neurons in the network
-	
+		
 	public:
 		//Constructor
 		Network();
@@ -24,11 +23,11 @@ class Network
 		//gets vector of neurons
 		std::vector<Neuron*> getNeurons() const;
 		
-		//getter des neurones
-		//Neuron getNeuron
+		void setExternalCurrent(double current);
 		
 		//update
-		void update(int time, double current);
+		void update(unsigned int time, unsigned int steps, double current);
 };
+
 
 #endif

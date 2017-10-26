@@ -3,18 +3,11 @@
 
 #include <vector>
 #include "Buffer.hpp"
+#include "Constants.hpp"
 
 class Neuron
 {
 	private:	
-		const double h_;
-		const double tau_;
-		const double C_;
-		const double R_ ;
-		const double thr_pot_;
-		const double ref_time_;
-		const double j_amp_;
-		const int delay_;
 		double c1_, c2_; 				//for the membrane equation
 		
 		double memb_pot_;
@@ -51,7 +44,7 @@ class Neuron
 		
 		void receive(unsigned long);
 		
-		bool update(unsigned int time, double current); 		//methode appele a chaque pas de temps dans le main
+		bool update(unsigned int time, unsigned int steps, double current); 		//methode appele a chaque pas de temps dans le main
 		
 	
 };

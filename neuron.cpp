@@ -1,20 +1,12 @@
 #include <iostream>
 #include "Neuron.hpp"
 #include <cmath>
-//#include <cassert>
+#include <cassert>
 
 using namespace std;
 
 Neuron::Neuron()
-	:h_(0.1),
-	tau_(20.0),
-	C_(1.0),
-	R_ (tau_/C_),
-	thr_pot_(20),
-	ref_time_(2),
-	j_amp_(1.5),
-	delay_(5),
-	memb_pot_(0.0),
+	:memb_pot_(0.0),
 	nb_spikes_(0),
 	i_ext_(0.0),
 	refractory_(false),
@@ -24,8 +16,9 @@ Neuron::Neuron()
 	connections_(),
 	buffer_()
 {
-	c1_ = exp(- h_ /tau_);
-	c2_= R_*(1.0 - c1_);
+	assert(TAU != 0);
+	c1_ = exp(- H / TAU);
+	c2_= R*(1.0 - c1_);
 }
 
 double Neuron::getMembranePotential() const
@@ -80,6 +73,7 @@ void Neuron::addSpikeTime(double time)
 
 void Neuron::addConnection(Neuron* target)
 {
+	assert(target != nullptr);
 	connections_.push_back(target);
 }
 
@@ -93,38 +87,40 @@ void Neuron::receive(unsigned long time)
 ///we save this spike time in the vectors spike_times_, we augment the 
 ///nb_spikes, and we set the variable t_spike to the current time;
 
-bool Neuron::update(unsigned int time, double current)
+bool Neuron::update(unsigned int time, unsigned int steps, double current)
 {
 	bool spike(false);
 	clock_ = time;
+	unsigned int t_stop = clock_ + steps;
 	i_ext_ = current;
-		
-	if (refractory_)
+	
+	while (clock_ < t_stop)
 	{
-		setMembranePotential(0.0);
-		//si on a depasse le temps ou il devait rester refractory on le remets
-		if (break_time_ <= 0.0)
+		if (refractory_)
 		{
-			refractory_ = false;
-			break_time_ = ref_time_;
+			setMembranePotential(RESET_POT);
+			//si on a depasse le temps ou il devait rester refractory on le remets
+			if (break_time_ <= 0.0)
+			{
+				refractory_ = false;
+				break_time_ = REF_TIME;
+			}
+		
+			break_time_ -= H;
 		}
-		
-		break_time_ -= h_;
-	}
-	else if (memb_pot_ > thr_pot_)
-	{
-		addSpikeTime(clock_);
-		nb_spikes_++;
-		spike = true;
-		refractory_ = true;
-		
-		
-	}
+		else if (memb_pot_ > THR_POT)
+		{
+			addSpikeTime(clock_);
+			nb_spikes_++;
+			spike = true;
+			refractory_ = true;		
+		}
 	
-	setMembranePotential(solveMembEquation() + (buffer_.getJ(time) * j_amp_));
-	buffer_.resetValue(time);	
-	
-	clock_++;
+		setMembranePotential(solveMembEquation() + (buffer_.getJ(time) * J_AMP));
+		buffer_.resetValue(time);	
+
+		clock_++;
+	}
 	
 	return spike;
 }

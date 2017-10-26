@@ -2,12 +2,12 @@
 #define BUFFER_H
 
 #include <vector>
+#include "Constants.hpp"
 
 class Buffer
 {
 	private:
 		std::vector<unsigned int> buffer_; //stores ints and then we multiply by j_amp
-		const int delay_;
 		
 	public:
 		//Constructor
