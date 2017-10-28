@@ -1,5 +1,5 @@
-#include "gtest/gtest.h"
-#include "Neuron.h"
+#include "googletest/include/gtest/gtest.h"
+#include "Neuron.hpp"
 #include <vector>
 #include <cmath>
 
@@ -15,9 +15,9 @@ TEST (OneNeuronTest , MembranePotential)
 	
 	//Several updates
 	//should tend to 20 and should not spike
-	n.update(0 , 10000 , currenz);
-	EXPECT_LT(20.0 n.getMembranePotential());
-	EXPECT_EQ(0 . getNbSpikes());
+	n.update(0 , 10000 , current);
+	EXPECT_NEAR(20.0, n.getMembranePotential() , 10e-3);
+	EXPECT_EQ(0 , n.getNbSpikes());
 	
 }
 
@@ -30,22 +30,16 @@ TEST (OneNeuronTest , SpikeTimes)
 	// at 92.4 ms, 186.8 ms, 281,2 ms and 375.6 ms
 	
 	//update the neuron 3757 times (steps) and check the spike times
-	n.update(0 , 3757 , 1.01);
+	n.update(0 , 3757 , current);
 	
 	std::vector<double> spike_t = n.getSpikeTimes();
 	
 	EXPECT_EQ(924 , spike_t[0]);
-	EXPECT_EQ(1868 , spike_t[1]);
-	EXPECT_EQ(2812 , spike_t[2]);
-	EXPECT_EQ(3756 , spike_t[3]);
+	EXPECT_EQ(1848 , spike_t[1]);
+	EXPECT_EQ(2791 , spike_t[2]);
+	EXPECT_EQ(3734 , spike_t[3]);
 		
 }
-
-
-
-
-
-
 
 int main(int argc, char **argv)
 {

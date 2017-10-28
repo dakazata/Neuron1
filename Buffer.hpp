@@ -2,12 +2,13 @@
 #define BUFFER_H
 
 #include <vector>
+#include <string>
 #include "Constants.hpp"
 
 class Buffer
 {
 	private:
-		std::vector<unsigned int> buffer_; //stores ints and then we multiply by j_amp
+		std::vector<double> buffer_; //stores doubles 
 		
 	public:
 		//Constructor
@@ -18,7 +19,7 @@ class Buffer
 		
 		void resetValue(long time);
 		
-		void addJ(unsigned long);			//add a transmission spike
+		void addJ(unsigned long, std::string type);			//add a transmission spike
 		
 		unsigned int getJ(long);
 		
@@ -26,8 +27,8 @@ class Buffer
 	
 		unsigned int index(long time);
 	
-		void afficher() const;
 	
 };
 
 #endif
+

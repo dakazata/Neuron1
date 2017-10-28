@@ -19,9 +19,17 @@ void Buffer::resetValue(long time)
 }
 
 //add a transmission spike
-void Buffer::addJ(unsigned long time)
+void Buffer::addJ(unsigned long time, string type)
 {
 	assert(index(time + D_STEPS) <= buffer_.size());
+	
+	if (type == "excitatory")
+	{
+		buffer_[index(time + D_STEPS)] += J_AMP_EXCIT;
+	} else if (type == "inhibitory")
+	{
+		buffer_[index(time + D_STEPS)] += J_AMP_INHIB;
+	}
 	buffer_[index(time + D_STEPS)] += 1;
 }			
 
@@ -39,13 +47,4 @@ unsigned int Buffer::getSize() const
 unsigned int Buffer::index(long time)
 {
 	return time % (D_STEPS+ 1);
-}
-
-void Buffer::afficher() const
-{
-	for (size_t i(0) ; i < buffer_.size() ; i++)
-	{
-		cout << i << "-" << buffer_[i] << "   ";
-	}
-	cout << endl;
 }

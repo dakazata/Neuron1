@@ -18,33 +18,23 @@ int main()
 	cin >> a;
 	cout << "End of time interval: " << endl;
 	cin >> b;
-	cout << "What is the external current? " << endl;
-	cin >> current;
 	
 	assert (a >= 0 and a <= b);
 
-	//Creation des neurones
-	Network network;
-	Neuron n1;
-	Neuron n2;
+	//Creation des network
+	Network network(N_TOTAL);
 	
-	//add neurons to network
-	//assert (n1 != nullptr);
-	//assert (n2* != nullptr);
-	network.addNeuron(&n1);
-	network.addNeuron(&n2);
-	
-	//connect neuron
-	n1.addConnection(&n2);
+	network.makeTargets();
+		
 	
 	//Creation of write file
-	ofstream textfile1;
+	//ofstream textfile1;
 	ofstream textfile2;
-	textfile1.open("Membrane_Potentials.txt");
+	//textfile1.open("Membrane_Potentials.txt");
 	textfile2.open("Spike_Times.txt");
 	
 	//write titles on external files
-	textfile1 << "Membrane Potentials : " << endl;
+	//textfile1 << "Membrane Potentials : " << endl;
 	textfile2 << "Spike Times : " << endl;
 	
 	while (simulation_time < SIM_END_TIME)    //calculation in steps
@@ -54,7 +44,7 @@ int main()
 		{
 			network.setExternalCurrent(current);
 			
-			network.update(simulation_time, 1 , current);
+			network.update(simulation_time, 1 , 0.0);
 		}
 		else
 		{
@@ -64,7 +54,7 @@ int main()
 		simulation_time++;
 	}
 	
-	textfile1.close();
+	//textfile1.close();
 	textfile2.close();
 
 }
